@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f4ef" />
+  <meta name="description" content="Consola pública para probar una API de clasificación socioeconómica basada en variables del hogar." />
+  <title>Movilidad Social MX · API pública</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --paper: #f7f4ef;
+      --paper-soft: #fbfaf7;
+      --ink: #151515;
+      --muted: #716d66;
+      --muted-2: #a6a097;
+      --line: rgba(21, 21, 21, .08);
+      --soft: rgba(21, 21, 21, .055);
+      --soft-2: rgba(21, 21, 21, .095);
+      --good: #0f8f67;
+      --bad: #b94a48;
+      --radius: 28px;
+      --shadow: 0 28px 80px rgba(20, 18, 15, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% -10%, rgba(226, 213, 190, .62), transparent 34rem),
+        radial-gradient(circle at 95% 18%, rgba(189, 211, 205, .40), transparent 28rem),
+        linear-gradient(180deg, var(--paper), #f2eee6 100%);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: -.01em;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; text-decoration-thickness: .08em; text-underline-offset: .18em; }
+
+    button, input { font: inherit; }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      color: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    code, pre, .mono { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    .page {
+      width: min(100%, 478px);
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: max(22px, env(safe-area-inset-top)) 22px max(28px, env(safe-area-inset-bottom));
+      position: relative;
+    }
+
+    @media (min-width: 900px) {
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 42px auto 42px 50%;
+        width: 478px;
+        transform: translateX(-50%);
+        border-radius: 42px;
+        background: rgba(255,255,255,.22);
+        box-shadow: var(--shadow);
+        pointer-events: none;
+      }
+      .page { padding-top: 48px; padding-bottom: 48px; }
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 34px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #151515;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      letter-spacing: -.06em;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--muted-2);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .device {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.34);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .device-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--good);
+      box-shadow: 0 0 0 5px rgba(15, 143, 103, .10);
+    }
+
+    .hero { margin-bottom: 34px; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 15vw, 72px);
+      line-height: .88;
+      letter-spacing: -.075em;
+      max-width: 9ch;
+    }
+
+    .hero p {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.55;
+      max-width: 34ch;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 26px 0 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.30);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin: 26px 0 30px;
+    }
+
+    .primary {
+      min-height: 54px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: white;
+      padding: 0 20px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      transition: transform .16s ease, opacity .16s ease, filter .16s ease;
+    }
+
+    .primary:active { transform: scale(.985); }
+    .primary:disabled { opacity: .55; cursor: wait; }
+
+    .ghost {
+      min-height: 54px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.32);
+      padding: 0 18px;
+      color: var(--muted);
+      font-weight: 800;
+      transition: background .16s ease, transform .16s ease;
+    }
+
+    .ghost:active { transform: scale(.985); }
+
+    .subtle-input {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      outline: none;
+      border-radius: 999px;
+      background: rgba(255,255,255,.32);
+      color: var(--ink);
+      padding: 0 14px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .subtle-input::placeholder { color: var(--muted-2); }
+
+    section { margin-top: 34px; }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -.055em;
+      line-height: 1;
+    }
+
+    .section-title span {
+      color: var(--muted-2);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+    }
+
+    .toggle-list { display: grid; gap: 12px; }
+
+    .toggle-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 8px 0;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-title {
+      display: block;
+      font-size: 15px;
+      font-weight: 760;
+      letter-spacing: -.035em;
+      line-height: 1.2;
+    }
+
+    .toggle-meta {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .switch {
+      width: 48px;
+      height: 29px;
+      position: relative;
+      flex: none;
+    }
+
+    .switch input { position: absolute; opacity: 0; pointer-events: none; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: rgba(21,21,21,.12);
+      transition: background .2s ease;
+    }
+
+    .slider::after {
+      content: "";
+      position: absolute;
+      width: 23px;
+      height: 23px;
+      top: 3px;
+      left: 3px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 5px 18px rgba(20,18,15,.16);
+      transition: transform .2s ease;
+    }
+
+    input:checked + .slider { background: var(--ink); }
+    input:checked + .slider::after { transform: translateX(19px); }
+
+    .result {
+      display: none;
+      margin-top: 36px;
+    }
+
+    .result.is-visible { display: block; animation: rise .32s ease both; }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    .result-main {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .result-label {
+      margin: 3px 0 0;
+      font-size: clamp(38px, 13vw, 58px);
+      line-height: .9;
+      letter-spacing: -.08em;
+      max-width: 7ch;
+    }
+
+    .result-code {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: right;
+      padding-bottom: 4px;
+      white-space: nowrap;
+    }
+
+    .scale {
+      height: 9px;
+      background: rgba(21,21,21,.075);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 18px 0 28px;
+    }
+
+    .scale-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--ink);
+      border-radius: 999px;
+      transition: width .5s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .prob-list { display: grid; gap: 13px; }
+
+    .prob-row { display: grid; gap: 6px; }
+
+    .prob-text {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .prob-text strong { color: var(--ink); }
+
+    .bar {
+      height: 5px;
+      background: rgba(21,21,21,.07);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: rgba(21,21,21,.28);
+      transition: width .5s ease;
+    }
+
+    .bar span.win { background: var(--ink); }
+
+    details {
+      margin-top: 12px;
+      color: var(--muted);
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--ink);
+      font-size: 15px;
+      letter-spacing: -.025em;
+      padding: 7px 0;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    details p, .note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      margin: 8px 0 0;
+    }
+
+    .var-grid { display: grid; gap: 12px; margin-top: 14px; }
+
+    .var-item { padding: 4px 0; }
+
+    .var-item b {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      letter-spacing: -.025em;
+    }
+
+    .var-item span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .code-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0 10px;
+      scrollbar-width: none;
+    }
+    .code-tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      flex: none;
+      padding: 10px 13px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.28);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .tab.is-active { background: var(--ink); color: #fff; }
+
+    pre {
+      margin: 0;
+      white-space: pre;
+      overflow-x: auto;
+      color: #38352f;
+      font-size: 11px;
+      line-height: 1.55;
+      padding: 8px 0 0;
+    }
+
+    .mini-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin: 12px 0 0;
+    }
+
+    .mini-btn {
+      background: transparent;
+      padding: 8px 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .error {
+      display: none;
+      color: var(--bad);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 14px;
+    }
+    .error.is-visible { display: block; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: max(22px, env(safe-area-inset-bottom));
+      transform: translate(-50%, 18px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 40;
+      background: rgba(21,21,21,.92);
+      color: #fff;
+      border-radius: 999px;
+      padding: 12px 15px;
+      font-size: 12px;
+      font-weight: 800;
+      transition: transform .25s ease, opacity .25s ease;
+      backdrop-filter: blur(14px);
+      white-space: nowrap;
+    }
+
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    footer {
+      margin-top: 46px;
+      color: var(--muted-2);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <nav class="topbar" aria-label="Estado de la aplicación">
+      <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+        <div class="brand-mark" aria-hidden="true">MS</div>
+        <div style="min-width:0;">
+          <p class="eyebrow">API pública</p>
+          <div class="mono" style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:245px;">Cloud Run · GitHub Pages</div>
+        </div>
+      </div>
+      <div class="device" id="deviceBadge"><span class="device-dot"></span><span>Detectando</span></div>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Movilidad social · México</p>
+      <h1>Clasifica un hogar.</h1>
+      <p>Interactúa con una API de inferencia para estimar una categoría socioeconómica a partir de activos, servicios y características del hogar. Es una demo técnica: no debe usarse para tomar decisiones sobre personas.</p>
+    </header>
+
+    <div class="status-row">
+      <span class="mono">Endpoint</span>
+      <span class="status-pill" id="apiStatus"><span class="device-dot" style="background:var(--muted-2);box-shadow:none;"></span>Sin verificar</span>
+    </div>
+    <input class="subtle-input mono" id="apiUrl" aria-label="URL base de la API" value="https://movilidad-social-api-mc7uk5vavq-uc.a.run.app" />
+
+    <section aria-labelledby="varsTitle">
+      <div class="section-title">
+        <h2 id="varsTitle">Variables</h2>
+        <span>9 señales</span>
+      </div>
+      <p class="note">Activa las características presentes en el hogar. La API recibirá estos valores como <code>features</code> con ceros y unos.</p>
+      <div class="toggle-list" id="toggleList"></div>
+
+      <div class="actions">
+        <button class="primary" id="predictBtn">Ejecutar predicción</button>
+        <button class="ghost" id="resetBtn" aria-label="Restablecer valores">Reset</button>
+      </div>
+      <p class="error" id="errorBox"></p>
+    </section>
+
+    <section class="result" id="resultPanel" aria-live="polite">
+      <p class="eyebrow">Resultado estimado</p>
+      <div class="result-main">
+        <div>
+          <h2 class="result-label" id="resultLabel">—</h2>
+        </div>
+        <div class="result-code mono" id="resultCode">AMAI: —</div>
+      </div>
+      <div class="scale" aria-hidden="true"><div class="scale-fill" id="scaleFill"></div></div>
+      <div class="prob-list" id="probList"></div>
+      <details>
+        <summary>Ver respuesta JSON</summary>
+        <pre><code id="jsonResponse">{}</code></pre>
+        <div class="mini-actions"><button class="mini-btn" data-copy="jsonResponse">Copiar JSON</button></div>
+      </details>
+    </section>
+
+    <section aria-labelledby="aboutTitle">
+      <div class="section-title">
+        <h2 id="aboutTitle">Qué significa</h2>
+        <span>Contexto</span>
+      </div>
+      <p class="note">La movilidad social se refiere al cambio en la condición socioeconómica de las personas. El CEEY la relaciona con igualdad de oportunidades: cuando las circunstancias de origen pesan menos sobre los logros, la movilidad social es mayor.</p>
+      <details open>
+        <summary>Explicación de las variables</summary>
+        <div class="var-grid" id="variableExplain"></div>
+      </details>
+      <details>
+        <summary>Fuente conceptual</summary>
+        <p>Para el contexto de movilidad social, consulta el Centro de Estudios Espinosa Yglesias: <a href="https://ceey.org.mx/movilidad-social/" target="_blank" rel="noopener noreferrer">ceey.org.mx/movilidad-social</a>.</p>
+      </details>
+    </section>
+
+    <section aria-labelledby="docsTitle">
+      <div class="section-title">
+        <h2 id="docsTitle">Usar la API</h2>
+        <span>POST /v1/predict</span>
+      </div>
+      <div class="code-tabs" role="tablist" aria-label="Lenguaje de ejemplo">
+        <button class="tab is-active" data-lang="curl">cURL</button>
+        <button class="tab" data-lang="js">JavaScript</button>
+        <button class="tab" data-lang="python">Python</button>
+      </div>
+      <pre><code id="codeBlock"></code></pre>
+      <div class="mini-actions">
+        <button class="mini-btn" data-copy="codeBlock">Copiar ejemplo</button>
+        <button class="mini-btn" id="checkApiBtn">Verificar API</button>
+      </div>
+      <p class="note">Para navegador, el backend debe permitir CORS desde tu dominio de GitHub Pages. El frontend usa <code>credentials: "omit"</code> y sólo envía <code>Content-Type: application/json</code>.</p>
+    </section>
+
+    <footer>
+      <strong>Nota ética.</strong> Este demo traduce variables del hogar en una predicción técnica. No evalúa el valor, potencial ni mérito de una persona. Úsalo para explicar modelos, APIs y experimentación responsable.
+    </footer>
+  </main>
+
+  <div class="toast" id="toast">Listo</div>
+
+  <script>
+    const API_DEFAULT = "https://movilidad-social-api-mc7uk5vavq-uc.a.run.app";
+    const PREDICT_PATH = "/v1/predict";
+    const READY_PATH = "/readyz";
+
+    const CLASS_LABELS = {
+      1: "Baja Baja",
+      2: "Baja Alta",
+      3: "Media Baja",
+      4: "Media Alta",
+      5: "Alta"
+    };
+
+    const AMAI_CORES = {
+      1: "E / D",
+      2: "D+",
+      3: "C-",
+      4: "C",
+      5: "C+ / A/B"
+    };
+
+    const VARIABLES_SCHEMA = [
+      {
+        key: "p126d",
+        title: "Horno de microondas",
+        group: "Equipamiento",
+        explain: "Señal de equipamiento doméstico. Ayuda a aproximar acceso a bienes durables dentro del hogar."
+      },
+      {
+        key: "p131",
+        title: "Automóvil o camioneta",
+        group: "Activos",
+        explain: "Indica acceso a un activo de transporte privado. Suele aportar información sobre patrimonio, movilidad y capacidad de gasto."
+      },
+      {
+        key: "p125d",
+        title: "Calentador de agua",
+        group: "Servicios",
+        explain: "Señal de infraestructura de vivienda y acceso a servicios que elevan condiciones de vida cotidiana."
+      },
+      {
+        key: "p126f",
+        title: "Tostador eléctrico",
+        group: "Equipamiento",
+        explain: "Bien doméstico complementario; funciona como indicador suave de equipamiento no esencial."
+      },
+      {
+        key: "p126g",
+        title: "Aspiradora",
+        group: "Equipamiento",
+        explain: "Bien durable asociado con equipamiento del hogar y ciertas condiciones materiales de vivienda."
+      },
+      {
+        key: "p125e",
+        title: "Servicio doméstico contratado",
+        group: "Servicios pagados",
+        explain: "Aproxima capacidad de contratar trabajo doméstico remunerado; suele ser una señal fuerte de nivel de recursos."
+      },
+      {
+        key: "p129a",
+        title: "Segunda propiedad",
+        group: "Patrimonio",
+        explain: "Indica posesión de otra vivienda o propiedad. Es una señal patrimonial relevante para aproximar riqueza del hogar."
+      },
+      {
+        key: "p125a",
+        title: "Agua entubada",
+        group: "Infraestructura",
+        explain: "Representa acceso a infraestructura básica de vivienda. Su ausencia puede reflejar rezago en servicios esenciales."
+      },
+      {
+        key: "p126b",
+        title: "Lavadora automática",
+        group: "Equipamiento",
+        explain: "Bien durable que reduce tiempo de trabajo doméstico y ayuda a perfilar equipamiento material del hogar."
+      }
+    ];
+
+    const DEFAULT_VALUES = {
+      p126d: 1,
+      p131: 0,
+      p125d: 1,
+      p126f: 0,
+      p126g: 0,
+      p125e: 0,
+      p129a: 0,
+      p125a: 1,
+      p126b: 1
+    };
+
+    const els = {
+      apiUrl: document.getElementById("apiUrl"),
+      apiStatus: document.getElementById("apiStatus"),
+      toggleList: document.getElementById("toggleList"),
+      variableExplain: document.getElementById("variableExplain"),
+      predictBtn: document.getElementById("predictBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      errorBox: document.getElementById("errorBox"),
+      resultPanel: document.getElementById("resultPanel"),
+      resultLabel: document.getElementById("resultLabel"),
+      resultCode: document.getElementById("resultCode"),
+      scaleFill: document.getElementById("scaleFill"),
+      probList: document.getElementById("probList"),
+      jsonResponse: document.getElementById("jsonResponse"),
+      codeBlock: document.getElementById("codeBlock"),
+      toast: document.getElementById("toast"),
+      deviceBadge: document.getElementById("deviceBadge"),
+      checkApiBtn: document.getElementById("checkApiBtn")
+    };
+
+    let activeLang = "curl";
+    let toastTimer = null;
+
+    function cleanHost() {
+      return (els.apiUrl.value || API_DEFAULT).trim().replace(/\/+$/, "");
+    }
+
+    function getFeatures() {
+      return Object.fromEntries(
+        VARIABLES_SCHEMA.map((variable) => {
+          const input = document.getElementById(`feature-${variable.key}`);
+          return [variable.key, input && input.checked ? 1 : 0];
+        })
+      );
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      toastTimer = setTimeout(() => els.toast.classList.remove("show"), 2100);
+    }
+
+    function showError(message) {
+      els.errorBox.textContent = message;
+      els.errorBox.classList.add("is-visible");
+    }
+
+    function clearError() {
+      els.errorBox.textContent = "";
+      els.errorBox.classList.remove("is-visible");
+    }
+
+    function setApiStatus(kind, message) {
+      const color = kind === "ok" ? "var(--good)" : kind === "bad" ? "var(--bad)" : "var(--muted-2)";
+      els.apiStatus.innerHTML = `<span class="device-dot" style="background:${color};box-shadow:none;"></span>${message}`;
+    }
+
+    function initToggles() {
+      els.toggleList.innerHTML = "";
+      els.variableExplain.innerHTML = "";
+
+      VARIABLES_SCHEMA.forEach((variable) => {
+        const row = document.createElement("label");
+        row.className = "toggle-row";
+        row.htmlFor = `feature-${variable.key}`;
+        row.innerHTML = `
+          <span>
+            <span class="toggle-title">${variable.title}</span>
+            <span class="toggle-meta"><span class="mono">${variable.key}</span> · ${variable.group}</span>
+          </span>
+          <span class="switch" aria-hidden="true">
+            <input id="feature-${variable.key}" type="checkbox" ${DEFAULT_VALUES[variable.key] ? "checked" : ""} />
+            <span class="slider"></span>
+          </span>
+        `;
+        els.toggleList.appendChild(row);
+        row.querySelector("input").addEventListener("change", updateCodeBlock);
+
+        const item = document.createElement("div");
+        item.className = "var-item";
+        item.innerHTML = `<b><span class="mono">${variable.key}</span> · ${variable.title}</b><span>${variable.explain}</span>`;
+        els.variableExplain.appendChild(item);
+      });
+    }
+
+    function updateCodeBlock() {
+      const host = cleanHost();
+      const features = getFeatures();
+      const payload = {
+        request_id: "demo-web-001",
+        features
+      };
+
+      if (activeLang === "curl") {
+        els.codeBlock.textContent = `curl -X POST "${host}${PREDICT_PATH}" \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify(payload, null, 2)}'`;
+      }
+
+      if (activeLang === "js") {
+        els.codeBlock.textContent = `const response = await fetch("${host}${PREDICT_PATH}", {
+  method: "POST",
+  mode: "cors",
+  credentials: "omit",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(${JSON.stringify(payload, null, 2)})
+});
+
+const data = await response.json();
+console.log(data.predicted_label, data.predicted_probability);`;
+      }
+
+      if (activeLang === "python") {
+        els.codeBlock.textContent = `import requests
+
+url = "${host}${PREDICT_PATH}"
+payload = ${JSON.stringify(payload, null, 2)}
+
+response = requests.post(url, json=payload, timeout=30)
+response.raise_for_status()
+
+print(response.json())`;
+      }
+    }
+
+    function renderResults(data) {
+      const predClass = Number(data.predicted_class);
+      const label = data.predicted_label || CLASS_LABELS[predClass] || "Sin etiqueta";
+      const probabilities = Array.isArray(data.probabilities) ? data.probabilities : [];
+      const positions = { 1: 18, 2: 38, 3: 58, 4: 78, 5: 100 };
+
+      els.resultLabel.textContent = label;
+      els.resultCode.textContent = `AMAI: ${AMAI_CORES[predClass] || "N/A"}`;
+      els.scaleFill.style.width = `${positions[predClass] || 50}%`;
+      els.jsonResponse.textContent = JSON.stringify(data, null, 2);
+
+      els.probList.innerHTML = "";
+      probabilities
+        .map((p) => ({
+          classId: Number(p.class_id),
+          label: p.label || CLASS_LABELS[Number(p.class_id)] || `Clase ${p.class_id}`,
+          probability: Number(p.probability || 0)
+        }))
+        .sort((a, b) => a.classId - b.classId)
+        .forEach((p) => {
+          const pct = Math.max(0, Math.min(100, p.probability * 100));
+          const isWinner = p.classId === predClass;
+          const row = document.createElement("div");
+          row.className = "prob-row";
+          row.innerHTML = `
+            <div class="prob-text">
+              <span>${isWinner ? "<strong>" : ""}${AMAI_CORES[p.classId] || "N/A"} · ${p.label}${isWinner ? "</strong>" : ""}</span>
+              <span>${pct.toFixed(1)}%</span>
+            </div>
+            <div class="bar"><span class="${isWinner ? "win" : ""}" style="width:${pct}%"></span></div>
+          `;
+          els.probList.appendChild(row);
+        });
+
+      els.resultPanel.classList.add("is-visible");
+      els.resultPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    async function verifyApi() {
+      clearError();
+      const host = cleanHost();
+      setApiStatus("pending", "Verificando");
+      try {
+        const response = await fetch(`${host}${READY_PATH}`, {
+          method: "GET",
+          mode: "cors",
+          credentials: "omit",
+          cache: "no-store"
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        setApiStatus("ok", data.status === "ready" ? "Modelo listo" : "API activa");
+        showToast("API verificada");
+      } catch (error) {
+        setApiStatus("bad", "CORS/API pendiente");
+        showError(`No pude verificar /readyz desde navegador. Si curl sí funciona, casi seguro falta CORS en FastAPI. Detalle: ${error.message}`);
+      }
+    }
+
+    async function executePrediction() {
+      clearError();
+      els.predictBtn.disabled = true;
+      els.predictBtn.textContent = "Consultando API...";
+
+      const host = cleanHost();
+      const payload = {
+        request_id: `web-${Date.now()}`,
+        features: getFeatures()
+      };
+
+      try {
+        const response = await fetch(`${host}${PREDICT_PATH}`, {
+          method: "POST",
+          mode: "cors",
+          credentials: "omit",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json().catch(() => null);
+        if (!response.ok) {
+          const detail = data?.detail || data?.message || "La API devolvió una respuesta no exitosa.";
+          throw new Error(`HTTP ${response.status}: ${detail}`);
+        }
+        if (!data || typeof data.predicted_class === "undefined") {
+          throw new Error("La respuesta no tiene el contrato esperado: predicted_class, predicted_label, probabilities.");
+        }
+
+        setApiStatus("ok", "Predicción OK");
+        renderResults(data);
+        showToast("Predicción completada");
+      } catch (error) {
+        setApiStatus("bad", "Revisar conexión");
+        showError(`No se pudo completar la predicción desde navegador. Revisa CORS, URL y endpoint /v1/predict. Detalle: ${error.message}`);
+      } finally {
+        els.predictBtn.disabled = false;
+        els.predictBtn.textContent = "Ejecutar predicción";
+      }
+    }
+
+    function resetValues() {
+      VARIABLES_SCHEMA.forEach((variable) => {
+        const input = document.getElementById(`feature-${variable.key}`);
+        if (input) input.checked = Boolean(DEFAULT_VALUES[variable.key]);
+      });
+      clearError();
+      els.resultPanel.classList.remove("is-visible");
+      updateCodeBlock();
+      showToast("Valores restablecidos");
+    }
+
+    function detectDevice() {
+      const isMobile = window.matchMedia("(max-width: 700px)").matches || window.matchMedia("(pointer: coarse)").matches;
+      document.documentElement.dataset.device = isMobile ? "mobile" : "desktop";
+      els.deviceBadge.querySelector("span:last-child").textContent = isMobile ? "Vista móvil" : "Pantalla grande";
+    }
+
+    function setupTabs() {
+      document.querySelectorAll(".tab").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeLang = button.dataset.lang;
+          document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("is-active"));
+          button.classList.add("is-active");
+          updateCodeBlock();
+        });
+      });
+    }
+
+    function setupCopy() {
+      document.querySelectorAll("[data-copy]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const target = document.getElementById(button.dataset.copy);
+          if (!target) return;
+          const text = target.textContent || "";
+          try {
+            await navigator.clipboard.writeText(text);
+          } catch (_) {
+            const area = document.createElement("textarea");
+            area.value = text;
+            document.body.appendChild(area);
+            area.select();
+            document.execCommand("copy");
+            area.remove();
+          }
+          showToast("Copiado");
+        });
+      });
+    }
+
+    els.predictBtn.addEventListener("click", executePrediction);
+    els.resetBtn.addEventListener("click", resetValues);
+    els.apiUrl.addEventListener("input", updateCodeBlock);
+    els.checkApiBtn.addEventListener("click", verifyApi);
+    window.addEventListener("resize", detectDevice);
+    window.addEventListener("orientationchange", detectDevice);
+
+    initToggles();
+    setupTabs();
+    setupCopy();
+    detectDevice();
+    updateCodeBlock();
+    verifyApi();
+  </script>
+</body>
+</html>
