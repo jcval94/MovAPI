@@ -70,7 +70,7 @@
         content: "";
         position: fixed;
         inset: 42px auto 42px 50%;
-        width: 478px;
+        width: 560px;
         transform: translateX(-50%);
         border-radius: 42px;
         background: rgba(255,255,255,.22);
@@ -452,15 +452,44 @@
 
     .tab.is-active { background: var(--ink); color: #fff; }
 
-    pre {
+    .code-shell {
+      position: relative;
+      margin-top: 2px;
+      border: 1px solid rgba(21,21,21,.06);
+      border-radius: 22px;
+      background: rgba(255,255,255,.26);
+      overflow: hidden;
+    }
+
+    .code-shell pre {
       margin: 0;
       white-space: pre;
       overflow-x: auto;
       color: #38352f;
       font-size: 11px;
       line-height: 1.55;
-      padding: 8px 0 0;
+      padding: 42px 14px 14px;
+      -webkit-overflow-scrolling: touch;
     }
+
+    .quick-copy {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+      min-height: 30px;
+      border-radius: 999px;
+      background: rgba(21,21,21,.88);
+      color: #fff;
+      padding: 0 11px;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 10px 24px rgba(20,18,15,.12);
+      transition: transform .16s ease, background .16s ease;
+    }
+
+    .quick-copy:active { transform: scale(.96); }
+
 
     .mini-actions {
       display: flex;
@@ -509,11 +538,215 @@
 
     .toast.show { transform: translate(-50%, 0); opacity: 1; }
 
+    .privacy-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 18px;
+      padding: 10px 13px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.30);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: background .16s ease, color .16s ease, transform .16s ease;
+    }
+
+    .privacy-link:hover { background: rgba(255,255,255,.48); color: var(--ink); }
+    .privacy-link:active { transform: scale(.985); }
+
+    .privacy {
+      margin-top: 54px;
+      margin-bottom: 18px;
+      padding: 18px;
+      border: 1px solid rgba(21,21,21,.06);
+      border-radius: 26px;
+      background: rgba(255,255,255,.24);
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.65;
+    }
+
+    .privacy details { margin-top: 0; }
+    .privacy details + details { margin-top: 14px; }
+
+    .privacy summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: -.02em;
+    }
+
+    .privacy summary:hover { color: var(--ink); }
+
+    .privacy details[open] > summary span[aria-hidden="true"] { transform: rotate(45deg); }
+
+    .privacy p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    .privacy h2, .privacy h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 11px;
+      line-height: 1.15;
+      letter-spacing: -.025em;
+    }
+
+    .privacy h3 { margin-top: 2px; }
+
+    .privacy-content, .privacy-integral {
+      margin-top: 16px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .privacy ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .privacy li { margin-top: 4px; }
+
+    .privacy a {
+      color: var(--ink);
+      text-decoration-color: rgba(21,21,21,.24);
+    }
+
+    .privacy .placeholder {
+      color: #5d5850;
+      font-weight: 700;
+    }
+
+    .privacy-footnote {
+      padding-top: 4px;
+      color: var(--muted-2) !important;
+      font-size: 9.5px !important;
+    }
+
     footer {
       margin-top: 46px;
       color: var(--muted-2);
       font-size: 11px;
       line-height: 1.55;
+    }
+
+    @media (max-width: 560px) {
+      body {
+        background:
+          radial-gradient(circle at 12% -8%, rgba(226, 213, 190, .68), transparent 22rem),
+          linear-gradient(180deg, var(--paper), #f2eee6 100%);
+      }
+
+      .page {
+        width: 100%;
+        padding: max(16px, env(safe-area-inset-top)) 16px max(22px, env(safe-area-inset-bottom));
+        overflow-x: hidden;
+      }
+
+      .topbar {
+        gap: 10px;
+        margin-bottom: 28px;
+      }
+
+      .brand-mark { width: 38px; height: 38px; }
+
+      .device {
+        padding: 7px 9px;
+        font-size: 10px;
+      }
+
+      h1 {
+        font-size: clamp(38px, 18vw, 54px);
+        max-width: 8.5ch;
+      }
+
+      .hero p {
+        max-width: none;
+        font-size: 14px;
+      }
+
+      .status-row, .result-main, .prob-text {
+        align-items: flex-start;
+      }
+
+      .status-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .primary, .ghost {
+        width: 100%;
+        min-height: 52px;
+      }
+
+      .toggle-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        padding: 10px 0;
+      }
+
+      .toggle-title { font-size: 14px; }
+
+      .result-main {
+        flex-direction: column;
+      }
+
+      .result-code { text-align: left; }
+
+      .result-label {
+        font-size: clamp(36px, 16vw, 48px);
+        max-width: 9ch;
+      }
+
+      .code-tabs {
+        margin-right: -16px;
+        padding-right: 16px;
+      }
+
+      .code-shell { border-radius: 18px; }
+      .code-shell pre { font-size: 10.5px; padding: 42px 12px 12px; }
+
+      .mini-actions {
+        flex-wrap: wrap;
+      }
+
+      .privacy {
+        margin-top: 44px;
+        padding: 15px;
+        border-radius: 22px;
+      }
+
+      .toast {
+        max-width: calc(100vw - 32px);
+        white-space: normal;
+        text-align: center;
+      }
+    }
+
+    @media (min-width: 700px) {
+      .page { width: min(100%, 560px); }
+
+      h1 { max-width: 10ch; }
+
+      .hero p { max-width: 42ch; }
+    }
+
+    @media (min-width: 1100px) {
+      body::before { width: 560px; }
     }
 
     .sr-only {
@@ -582,7 +815,10 @@
       <div class="prob-list" id="probList"></div>
       <details>
         <summary>Ver respuesta JSON</summary>
-        <pre><code id="jsonResponse">{}</code></pre>
+        <div class="code-shell">
+          <button class="quick-copy" data-copy="jsonResponse" aria-label="Copiar respuesta JSON">Copiar</button>
+          <pre><code id="jsonResponse">{}</code></pre>
+        </div>
         <div class="mini-actions"><button class="mini-btn" data-copy="jsonResponse">Copiar JSON</button></div>
       </details>
     </section>
@@ -613,7 +849,10 @@
         <button class="tab" data-lang="js">JavaScript</button>
         <button class="tab" data-lang="python">Python</button>
       </div>
-      <pre><code id="codeBlock"></code></pre>
+      <div class="code-shell">
+        <button class="quick-copy" data-copy="codeBlock" aria-label="Copiar ejemplo de código">Copiar</button>
+        <pre><code id="codeBlock"></code></pre>
+      </div>
       <div class="mini-actions">
         <button class="mini-btn" data-copy="codeBlock">Copiar ejemplo</button>
         <button class="mini-btn" id="checkApiBtn">Verificar API</button>
@@ -621,8 +860,164 @@
       <p class="note">Para navegador, el backend debe permitir CORS desde tu dominio de GitHub Pages. El frontend usa <code>credentials: "omit"</code> y sólo envía <code>Content-Type: application/json</code>.</p>
     </section>
 
+    <section id="privacidad" class="privacy" aria-labelledby="privacyTitle">
+      <details>
+        <summary>
+          <span id="privacyTitle">Privacidad y uso responsable</span>
+          <span aria-hidden="true">＋</span>
+        </summary>
+
+        <div class="privacy-content">
+          <section>
+            <h2>Aviso de privacidad simplificado</h2>
+            <p>
+              José Carlos Del Valle López, con correo de contacto
+              <a href="mailto:valc941226@gmail.com">valc941226@gmail.com</a>,
+              es responsable del tratamiento de los datos ingresados en esta página demostrativa.
+            </p>
+            <p>
+              La finalidad principal es ejecutar una demostración técnica de una API de predicción de clasificación socioeconómica a partir de variables del hogar. La página no solicita nombre, teléfono, correo, domicilio exacto ni identificación oficial de la persona usuaria.
+            </p>
+            <p>
+              El uso de esta página implica el envío de las variables seleccionadas al servicio de predicción desplegado en Google Cloud Run. También pueden generarse registros técnicos necesarios para operación, seguridad, diagnóstico y prevención de abuso del servicio.
+            </p>
+            <p>
+              El resultado es una estimación probabilística y experimental. No debe usarse para tomar decisiones crediticias, laborales, comerciales, gubernamentales, médicas, legales, de elegibilidad, exclusión o asignación de beneficios sobre personas u hogares.
+            </p>
+            <p>Puedes consultar el aviso integral desplegando la sección siguiente.</p>
+          </section>
+
+          <details>
+            <summary>
+              <span>Ver aviso de privacidad integral</span>
+              <span aria-hidden="true">＋</span>
+            </summary>
+
+            <div class="privacy-integral">
+              <section>
+                <h3>1. Responsable</h3>
+                <p>El responsable del tratamiento de los datos es José Carlos Del Valle López.</p>
+                <p>Correo de contacto: <a href="mailto:valc941226@gmail.com">valc941226@gmail.com</a>.</p>
+                <p>Domicilio para oír y recibir solicitudes relacionadas con datos personales: <span class="placeholder">domicilio designado disponible previa solicitud al correo de contacto</span>.</p>
+              </section>
+
+              <section>
+                <h3>2. Naturaleza de la página</h3>
+                <p>Esta página es una demostración técnica, educativa y experimental de una API de clasificación socioeconómica. No constituye asesoría económica, social, crediticia, estadística oficial, gubernamental, legal ni profesional.</p>
+                <p>La predicción se genera con un modelo automatizado a partir de variables binarias relacionadas con características del hogar. El resultado puede contener errores, sesgos, incertidumbre o interpretaciones incompletas.</p>
+              </section>
+
+              <section>
+                <h3>3. Datos que se tratan</h3>
+                <p>Para generar la predicción, la página puede tratar las respuestas seleccionadas por la persona usuaria respecto de las siguientes variables del hogar:</p>
+                <ul>
+                  <li><code>p126d</code>: horno de microondas.</li>
+                  <li><code>p131</code>: automóvil o camioneta propia.</li>
+                  <li><code>p125d</code>: calentador de agua.</li>
+                  <li><code>p126f</code>: tostador de pan eléctrico.</li>
+                  <li><code>p126g</code>: aspiradora de pisos.</li>
+                  <li><code>p125e</code>: servicio doméstico contratado.</li>
+                  <li><code>p129a</code>: segunda propiedad o casa adicional.</li>
+                  <li><code>p125a</code>: conexión de agua entubada.</li>
+                  <li><code>p126b</code>: lavadora de ropa automática.</li>
+                </ul>
+                <p>Además, por razones técnicas, de seguridad y operación, los proveedores de infraestructura pueden generar metadatos técnicos asociados a la solicitud, como fecha y hora de acceso, endpoint consultado, código de respuesta, navegador, sistema operativo, dirección IP aproximada, latencia y registros técnicos del servicio.</p>
+                <p>La página no solicita de forma directa nombre, teléfono, correo electrónico, identificación oficial, domicilio exacto, datos bancarios, ubicación precisa, datos de salud, datos biométricos, información religiosa, política, sindical ni datos sobre vida sexual.</p>
+              </section>
+
+              <section>
+                <h3>4. Finalidades del tratamiento</h3>
+                <p><strong>Finalidades primarias:</strong></p>
+                <ul>
+                  <li>Ejecutar la predicción solicitada por la persona usuaria.</li>
+                  <li>Mostrar el resultado probabilístico del modelo.</li>
+                  <li>Permitir la interacción con la API desde la interfaz web.</li>
+                  <li>Verificar disponibilidad, estabilidad y funcionamiento del servicio.</li>
+                  <li>Prevenir abuso técnico, errores, fallos operativos o consumo anómalo del servicio.</li>
+                  <li>Generar registros técnicos mínimos para diagnóstico, seguridad y mantenimiento.</li>
+                </ul>
+                <p><strong>Finalidades secundarias:</strong></p>
+                <ul>
+                  <li>Mejorar la experiencia de la demostración.</li>
+                  <li>Evaluar errores generales de uso de la interfaz.</li>
+                  <li>Documentar el funcionamiento técnico del proyecto.</li>
+                </ul>
+                <p>La página no utiliza la información ingresada para publicidad personalizada, venta de datos, perfilamiento comercial individual, decisiones automatizadas vinculantes ni contacto comercial directo.</p>
+              </section>
+
+              <section>
+                <h3>5. Base de consentimiento</h3>
+                <p>Al utilizar la página y presionar el botón de predicción, la persona usuaria acepta que las variables seleccionadas sean enviadas al servicio de predicción para las finalidades descritas en este aviso.</p>
+                <p>Si no estás de acuerdo con este tratamiento, no utilices la herramienta ni ejecutes la predicción.</p>
+              </section>
+
+              <section>
+                <h3>6. Almacenamiento y conservación</h3>
+                <p>Esta demostración no crea una base de datos propia con las respuestas ingresadas por la persona usuaria ni conserva historiales individuales de predicción dentro de la interfaz web.</p>
+                <p>Sin embargo, el servicio de backend y los proveedores de infraestructura pueden conservar registros técnicos de operación por los periodos definidos en sus políticas y configuraciones de retención, únicamente para fines de seguridad, operación, diagnóstico, auditoría técnica y continuidad del servicio.</p>
+              </section>
+
+              <section>
+                <h3>7. Transferencias y encargados</h3>
+                <p>Para operar esta página y la API, pueden intervenir proveedores tecnológicos que actúan como infraestructura o encargados de tratamiento, incluyendo servicios de hosting estático, infraestructura en la nube, despliegue de aplicaciones, monitoreo técnico y entrega de contenido.</p>
+                <p>La página puede utilizar, según la configuración del proyecto, servicios como GitHub Pages para publicación del sitio y Google Cloud Run para ejecución de la API.</p>
+                <p>No se venden datos personales ni se realizan transferencias con fines comerciales. Sólo se compartiría información cuando sea necesario para la operación técnica del servicio, por requerimiento legal, para proteger derechos del responsable o para atender solicitudes válidas de autoridad competente.</p>
+              </section>
+
+              <section>
+                <h3>8. Cookies, analítica y tecnologías similares</h3>
+                <p>Esta versión de la página no utiliza cookies propias de seguimiento, formularios de registro, cuentas de usuario ni identificadores persistentes creados por la aplicación.</p>
+                <p>Los proveedores de infraestructura, navegador o plataforma de publicación pueden generar registros técnicos propios conforme a sus políticas. Si en el futuro se agregan herramientas de analítica, cookies, formularios, autenticación, bases de datos o medición de comportamiento, este aviso deberá actualizarse antes de activar dichas funciones.</p>
+              </section>
+
+              <section>
+                <h3>9. Derechos ARCO y revocación del consentimiento</h3>
+                <p>Puedes ejercer tus derechos de acceso, rectificación, cancelación u oposición, así como revocar tu consentimiento o limitar el uso del tratamiento, enviando una solicitud al correo: <a href="mailto:valc941226@gmail.com">valc941226@gmail.com</a>.</p>
+                <p>La solicitud deberá incluir, al menos: nombre de la persona solicitante, medio para recibir respuesta, descripción clara del derecho que desea ejercer, información que permita localizar el tratamiento referido y, en su caso, documentos que acrediten identidad o representación legal.</p>
+                <p>En caso de que la solicitud esté relacionada únicamente con registros técnicos anonimizados, agregados o no identificables, podría no ser posible localizar información asociada a una persona específica.</p>
+              </section>
+
+              <section>
+                <h3>10. Seguridad</h3>
+                <p>Se procuran medidas razonables de seguridad técnica y administrativa para evitar acceso, uso, pérdida, alteración o divulgación no autorizada de la información tratada por la demostración.</p>
+                <p>Ningún sistema conectado a internet puede garantizar seguridad absoluta. Por ello, no ingreses información personal adicional, identificadores directos, datos reales de terceros ni información que no sea necesaria para probar la herramienta.</p>
+              </section>
+
+              <section>
+                <h3>11. Menores de edad</h3>
+                <p>Esta página no está dirigida a niñas, niños o adolescentes. Si una persona menor de edad utiliza la herramienta, deberá hacerlo con supervisión de madre, padre, tutor o persona legalmente autorizada.</p>
+              </section>
+
+              <section>
+                <h3>12. Uso permitido y restricciones</h3>
+                <p>La herramienta sólo debe utilizarse con fines demostrativos, educativos, técnicos o de exploración del funcionamiento de una API.</p>
+                <p>Queda prohibido utilizar la predicción para discriminar, excluir, segmentar de forma dañina, negar servicios, evaluar elegibilidad real, perfilar personas identificables o tomar decisiones que produzcan efectos jurídicos, económicos, sociales o materiales sobre personas u hogares.</p>
+              </section>
+
+              <section>
+                <h3>13. Cambios al aviso de privacidad</h3>
+                <p>Este aviso puede modificarse para reflejar cambios técnicos, legales, operativos o de finalidad. La versión vigente estará disponible en esta misma página, en la sección <a href="#privacidad">Aviso de privacidad</a>.</p>
+                <p>Fecha de última actualización: <time datetime="2026-05-30">30 de mayo de 2026</time>.</p>
+              </section>
+
+              <section>
+                <h3>14. Contacto</h3>
+                <p>Para dudas sobre este aviso, uso responsable del modelo o solicitudes relacionadas con datos personales, escribe a: <a href="mailto:valc941226@gmail.com">valc941226@gmail.com</a>.</p>
+              </section>
+
+              <p class="privacy-footnote">
+                Este aviso fue redactado para una demostración técnica sin registro de usuarios, sin base de datos propia de predicciones y sin cookies propias de seguimiento. Si se agregan analítica, autenticación, formularios, almacenamiento histórico, pagos, publicidad, bases de datos o uso productivo, el aviso deberá actualizarse antes de publicar esos cambios.
+              </p>
+            </div>
+          </details>
+        </div>
+      </details>
+    </section>
+
     <footer>
       <strong>Nota ética.</strong> Este demo traduce variables del hogar en una predicción técnica. No evalúa el valor, potencial ni mérito de una persona. Úsalo para explicar modelos, APIs y experimentación responsable.
+      <br />
+      <a class="privacy-link" href="#privacidad">Leer aviso de privacidad →</a>
     </footer>
   </main>
 
