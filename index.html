@@ -70,7 +70,7 @@
         content: "";
         position: fixed;
         inset: 42px auto 42px 50%;
-        width: min(1180px, calc(100vw - 64px));
+        width: min(860px, calc(100vw - 64px));
         transform: translateX(-50%);
         border-radius: 42px;
         background: rgba(255,255,255,.22);
@@ -79,7 +79,7 @@
       }
 
       .page {
-        width: min(100% - 64px, 1180px);
+        width: min(100% - 64px, 860px);
         padding-top: 48px;
         padding-bottom: 48px;
       }
@@ -766,7 +766,7 @@
 
       body::before {
         inset: 34px auto 34px 50%;
-        width: min(1320px, calc(100vw - 72px));
+        width: min(900px, calc(100vw - 72px));
         border: 0;
         border-radius: 46px;
         background:
@@ -777,21 +777,13 @@
       }
 
       .page {
-        width: min(1320px, calc(100vw - 72px));
+        width: min(900px, calc(100vw - 72px));
         min-height: auto;
         display: grid;
-        grid-template-columns: minmax(360px, .95fr) minmax(360px, 1.05fr);
-        grid-template-rows: auto auto auto auto auto auto;
-        column-gap: 28px;
+        grid-template-columns: minmax(0, 1fr);
         row-gap: 22px;
         align-items: start;
         padding: 50px clamp(30px, 3vw, 46px) 46px;
-      }
-
-      .topbar,
-      .privacy,
-      footer {
-        grid-column: 1 / -1;
       }
 
       .topbar {
@@ -831,10 +823,8 @@
       }
 
       .hero {
-        grid-column: 1;
-        grid-row: 2 / span 3;
         margin-bottom: 0;
-        min-height: 460px;
+        min-height: 360px;
         padding: clamp(32px, 4vw, 56px);
         display: flex;
         flex-direction: column;
@@ -868,15 +858,11 @@
       }
 
       .status-row {
-        grid-column: 1;
-        grid-row: 5;
         margin: 0;
         padding: 0 8px;
       }
 
       .subtle-input {
-        grid-column: 1;
-        grid-row: 6;
         min-height: 48px;
         background: rgba(255,255,255,.52);
       }
@@ -890,25 +876,15 @@
         padding: 28px;
       }
 
-      .page > section[aria-labelledby="varsTitle"] {
-        grid-column: 2;
-        grid-row: 2;
+      .page > section[aria-labelledby="varsTitle"],
+      .result,
+      .page > section[aria-labelledby="aboutTitle"],
+      .page > section[aria-labelledby="docsTitle"] {
+        grid-column: 1;
       }
 
       .result {
-        grid-column: 2;
-        grid-row: 3;
         margin-top: 0;
-      }
-
-      .page > section[aria-labelledby="aboutTitle"] {
-        grid-column: 2;
-        grid-row: 4;
-      }
-
-      .page > section[aria-labelledby="docsTitle"] {
-        grid-column: 1 / -1;
-        grid-row: 7;
       }
 
       .section-title {
@@ -925,8 +901,8 @@
       }
 
       .toggle-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0 20px;
+        grid-template-columns: 1fr;
+        gap: 0;
       }
 
       .toggle-row {
@@ -935,13 +911,13 @@
         border-bottom: 1px solid rgba(21,21,21,.055);
       }
 
-      .toggle-row:nth-last-child(-n + 2) {
+      .toggle-row:last-child {
         border-bottom: 0;
       }
 
       .var-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px 24px;
+        grid-template-columns: 1fr;
+        gap: 18px;
       }
 
       .code-shell pre {
@@ -964,16 +940,11 @@
       }
     }
 
-    @media (min-width: 1180px) {
-      .page {
-        grid-template-columns: minmax(440px, 540px) minmax(520px, 1fr);
-        column-gap: 34px;
-      }
-    }
 
-    @media (min-width: 1440px) {
+    @media (min-width: 1180px) {
+      body::before,
       .page {
-        column-gap: 42px;
+        width: min(940px, calc(100vw - 96px));
       }
     }
 
@@ -982,8 +953,8 @@
       Mobile must remain a strict single-column flow. Some mobile browsers can
       report a large layout viewport (for example when "desktop site" is active),
       so this override is intentionally placed after the desktop rules and also
-      targets coarse pointers up to tablet/large-mobile widths. Desktop devices keep
-      the two-column composition unchanged.
+      targets coarse pointers up to tablet/large-mobile widths. Desktop devices now
+      use the same one-column reading flow with larger cards and spacing.
     */
     @media (max-width: 959px), (max-width: 1180px) and (hover: none) and (pointer: coarse) {
       body::before { display: none; }
@@ -1060,7 +1031,7 @@
         border-bottom: 0;
       }
 
-      .toggle-row:nth-last-child(-n + 2) {
+      .toggle-row:last-child {
         border-bottom: 0;
       }
 
