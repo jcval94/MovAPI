@@ -960,7 +960,8 @@
       body::before { display: none; }
 
       .page {
-        width: min(100%, 478px);
+        width: 100%;
+        max-width: none;
         min-height: 100svh;
         display: block;
         padding: max(16px, env(safe-area-inset-top)) 16px max(22px, env(safe-area-inset-bottom));
@@ -1046,6 +1047,126 @@
       footer {
         margin-top: 46px;
         padding: 0;
+      }
+    }
+
+
+    /*
+      If a phone renders the page with a large layout viewport (Chrome's
+      "desktop site" mode, GitHub Pages previews, or some embedded browsers),
+      the previous 478px cap made the interface look like a tiny centered
+      column. Coarse-pointer devices should instead occupy the available width
+      and scale spacing/type from the viewport so mobile remains readable.
+    */
+    @media (max-width: 1180px) and (hover: none) and (pointer: coarse) {
+      .page {
+        width: 100%;
+        max-width: none;
+        padding-inline: clamp(22px, 7vw, 72px);
+      }
+
+      .topbar {
+        margin-bottom: clamp(30px, 5vw, 52px);
+      }
+
+      .brand-mark {
+        width: clamp(42px, 8vw, 62px);
+        height: clamp(42px, 8vw, 62px);
+        font-size: clamp(16px, 3vw, 22px);
+      }
+
+      .eyebrow,
+      .section-title span,
+      .device,
+      .status-pill {
+        font-size: clamp(11px, 2.15vw, 15px);
+      }
+
+      h1 {
+        font-size: clamp(54px, 14vw, 112px);
+        max-width: 8.8ch;
+      }
+
+      h2 {
+        font-size: clamp(27px, 6vw, 42px);
+      }
+
+      .hero p {
+        max-width: 40ch;
+        font-size: clamp(16px, 3.4vw, 24px);
+        line-height: 1.5;
+      }
+
+      .status-row,
+      .subtle-input,
+      .note,
+      .toggle-meta,
+      details p,
+      .privacy,
+      footer {
+        font-size: clamp(13px, 2.8vw, 18px);
+      }
+
+      .subtle-input {
+        min-height: clamp(48px, 9vw, 64px);
+        padding-inline: clamp(14px, 3vw, 22px);
+      }
+
+      section,
+      .page > section[aria-labelledby="varsTitle"] {
+        margin-top: clamp(38px, 7vw, 68px);
+      }
+
+      .toggle-list {
+        gap: clamp(14px, 3vw, 24px);
+      }
+
+      .toggle-row {
+        gap: clamp(14px, 4vw, 34px);
+        padding-block: clamp(11px, 2.4vw, 20px);
+      }
+
+      .toggle-title,
+      summary {
+        font-size: clamp(16px, 3.35vw, 23px);
+      }
+
+      .switch {
+        width: clamp(54px, 10vw, 76px);
+        height: clamp(32px, 6vw, 45px);
+      }
+
+      .slider::after {
+        width: calc(100% - 12px);
+        max-width: clamp(26px, 5vw, 37px);
+        height: calc(100% - 6px);
+      }
+
+      input:checked + .slider::after {
+        transform: translateX(calc(clamp(54px, 10vw, 76px) - clamp(26px, 5vw, 37px) - 6px));
+      }
+
+      .actions {
+        gap: clamp(12px, 3vw, 18px);
+      }
+
+      .primary,
+      .ghost {
+        min-height: clamp(56px, 10vw, 76px);
+        font-size: clamp(16px, 3vw, 22px);
+      }
+
+      .result-label {
+        font-size: clamp(48px, 13vw, 96px);
+      }
+
+      .result-code,
+      .prob-text,
+      .tab,
+      .mini-btn,
+      .toast,
+      .quick-copy {
+        font-size: clamp(12px, 2.5vw, 17px);
       }
     }
 
