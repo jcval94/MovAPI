@@ -4,22 +4,26 @@ Este paquete contiene un frontend estático listo para GitHub Pages.
 
 ## Archivos
 
-- `index.html`: aplicación pública móvil-first para consumir la API de Cloud Run.
+- `index.html`: aplicación pública responsive para consumir la API de Cloud Run, con layout móvil y layout de escritorio diferenciados.
 - `cors_fastapi_patch.py`: snippet de referencia para habilitar CORS en FastAPI.
 
-## Despliegue en GitHub Pages
+## Despliegue automático en GitHub Pages
 
-1. Crea un repositorio nuevo, por ejemplo `movilidad-social-web`.
-2. Sube `index.html` a la raíz del repositorio.
-3. Ve a `Settings → Pages`.
-4. En `Build and deployment`, selecciona `Deploy from a branch`.
-5. Selecciona `main` y carpeta `/root`.
-6. Guarda.
+El repositorio incluye el workflow `.github/workflows/deploy-pages.yml`, que publica el sitio automáticamente cuando se hace `push` a `main` con cambios en `index.html` o en el propio workflow.
+
+Para activarlo por primera vez:
+
+1. Ve a `Settings → Pages` en GitHub.
+2. En `Build and deployment`, selecciona `GitHub Actions` como fuente.
+3. Sube los cambios a la rama `main`.
+4. GitHub Actions empaquetará `index.html` en un artefacto estático y lo desplegará en Pages.
+
+También puedes ejecutar el workflow manualmente desde `Actions → Deploy GitHub Pages → Run workflow`.
 
 GitHub Pages publicará el sitio en una URL parecida a:
 
 ```text
-https://jcval94.github.io/movilidad-social-web/
+https://TU_USUARIO.github.io/movilidad-social-web/
 ```
 
 ## CORS
